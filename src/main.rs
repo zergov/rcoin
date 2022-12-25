@@ -20,16 +20,12 @@ fn main() {
     let private_key_str = private_key.to_hex_str().unwrap();
     let public_key_str = format!("04{}{}", pub_x.to_hex_str().unwrap(), pub_y.to_hex_str().unwrap());
 
-    println!("private key ====================");
-    println!("k:\t{}", private_key_str);
-    println!("");
-    println!("public key ====================");
-    println!("x:\t{}", pub_x.to_hex_str().unwrap());
-    println!("y:\t{}", pub_y.to_hex_str().unwrap());
-    println!("k:\t{}", public_key_str);
-    println!("");
-    println!("address ====================");
-    println!("addr: {}", generate_address(public_key_str.as_str()))
+    println!("Rcoin address: {}", generate_address(public_key_str.as_str()));
+    println!("==================================");
+    println!("private key:\t{}", private_key_str);
+    println!("public key:\t{}", public_key_str);
+    println!("x: {}", pub_x.to_hex_str().unwrap());
+    println!("y: {}", pub_y.to_hex_str().unwrap());
 }
 
 // Public key to Rcoin address.
