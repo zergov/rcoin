@@ -20,7 +20,7 @@ pub fn generate_keychain() -> Keychain {
 }
 
 impl Keychain {
-    pub fn private_key_to_hex(&self) -> String {
+    pub fn private_key_hex(&self) -> String {
         self.private_key.to_hex_str().unwrap().to_string()
     }
 
@@ -31,7 +31,7 @@ impl Keychain {
             .unwrap()
     }
 
-    pub fn public_key_to_hex(&self) -> String {
+    pub fn public_key_hex(&self) -> String {
         let mut ctx = BigNumContext::new().unwrap();
         let mut x = BigNum::new().unwrap();
         let mut y = BigNum::new().unwrap();
@@ -43,4 +43,3 @@ impl Keychain {
         format!("04{}{}", x.to_hex_str().unwrap(), y.to_hex_str().unwrap())
     }
 }
-
