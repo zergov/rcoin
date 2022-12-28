@@ -48,6 +48,10 @@ impl Block {
     pub fn hash_hex(&self) -> String {
         hex::encode(self.hash().to_be_bytes())
     }
+
+    pub fn prev_block_hash_hex(&self) -> String {
+        hex::encode(self.header.prev_block_hash.to_be_bytes())
+    }
 }
 
 #[cfg(test)]
@@ -82,6 +86,14 @@ mod test {
         assert_eq!(
             "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
             genesis().hash_hex()
+        );
+    }
+
+    #[test]
+    fn prev_block_hash_hex_test() {
+        assert_eq!(
+            "0000000000000000000000000000000000000000000000000000000000000000",
+            genesis().prev_block_hash_hex()
         );
     }
 }
