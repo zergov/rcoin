@@ -1,4 +1,6 @@
 use clap::{Args, Parser, Subcommand};
+use std::fs;
+use std::path::Path;
 
 #[derive(Parser)]
 #[command(name = "rcoin")]
@@ -39,8 +41,24 @@ fn main() {
 fn wallet_command(wallet: &Wallet) {
     match &wallet.commands {
         WalletCommands::New{ path } => {
-            println!("creating new wallet at: {}", path);
+            if let Err(error) = fs::create_dir(path) {
+                println!("could not create wallet at: {}", path);
+                println!("{}", error);
+                return
+            }
+
+            let path = Path::new(path);
             let keychain = rcoin::keys::generate_keychain();
+
+            if let Err(error) = fs::write(path.join("key"), keychain.private_key_pem()) {
+                println!("could not create private key file: {}", error);
+                return
+            }
+
+            if let Err(error) = fs::write(path.join("key.pub"), keychain.public_key_pem()) {
+                println!("could not create public key file: {}", error);
+                return
+            }
 
             println!("Rcoin address: {}", rcoin::addresses::from_keychain(&keychain));
             println!("==================================");
