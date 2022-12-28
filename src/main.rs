@@ -26,7 +26,8 @@ struct Wallet {
 #[derive(Subcommand)]
 enum WalletCommands {
     /// Generate a new rcoin wallet at the given path.
-    New { path: String }
+    New { path: String },
+    Info { path: String },
 }
 
 fn main() {
@@ -35,7 +36,8 @@ fn main() {
     match &cli.commands {
         Commands::Wallet(wallet) => {
             match &wallet.commands {
-                WalletCommands::New{ path } => create_wallet(path)
+                WalletCommands::New{ path } => create_wallet(path),
+                WalletCommands::Info{ path } => show_wallet_info(path),
             }
         }
     }
@@ -61,6 +63,17 @@ fn create_wallet(path: &String) {
         println!("could not create public key file: {}", error);
         return
     }
+
+    println!("Rcoin address: {}", rcoin::addresses::from_keychain(&keychain));
+    println!("==================================");
+    println!("private key:\t{}", keychain.private_key_hex());
+    println!("public key:\t{}", keychain.public_key_hex());
+}
+
+fn show_wallet_info(path: &String) {
+    let path = Path::new(path);
+    let private_key_pem = fs::read(path.join("key")).expect("could not read private key file.");
+    let keychain = rcoin::keys::from_pem(&private_key_pem);
 
     println!("Rcoin address: {}", rcoin::addresses::from_keychain(&keychain));
     println!("==================================");
