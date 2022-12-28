@@ -13,7 +13,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn target_to_bits_test() {
+    fn bits_to_target_test() {
         // genesis block bits & difficulty
         let target_hex = "00000000ffff0000000000000000000000000000000000000000000000000000";
         let target = U256::from_str_radix(target_hex, 16).unwrap();
