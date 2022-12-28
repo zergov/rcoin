@@ -44,6 +44,10 @@ impl Block {
         let payload: [u8; 32] = payload.to_vec().try_into().unwrap();
         U256::from_le_bytes(payload)
     }
+
+    pub fn hash_hex(&self) -> String {
+        hex::encode(self.hash().to_be_bytes())
+    }
 }
 
 #[cfg(test)]
@@ -70,6 +74,14 @@ mod test {
         assert_eq!(
             U256::from_str_radix("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", 16).unwrap(),
             genesis().hash()
+        );
+    }
+
+    #[test]
+    fn genesis_hash_hex_test() {
+        assert_eq!(
+            "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+            genesis().hash_hex()
         );
     }
 }
