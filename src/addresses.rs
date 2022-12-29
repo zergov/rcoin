@@ -13,13 +13,8 @@ pub fn from_keychain(keychain: &Keychain) -> String {
 
     let checksum = hash(MessageDigest::sha256(), &payload).unwrap();
     let checksum = hash(MessageDigest::sha256(), &checksum).unwrap();
-    let mut checksum = checksum
-        .to_vec()
-        .into_iter()
-        .take(4)
-        .collect();
 
-    payload.append(&mut checksum);
+    payload.extend(&checksum[0..4]);
 
     bs58::encode(payload).into_string()
 }
