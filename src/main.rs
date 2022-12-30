@@ -82,7 +82,7 @@ fn create_wallet(path: &String) {
 fn show_wallet_keys(path: &String) {
     let path = Path::new(path);
     let private_key_pem = fs::read(path.join("key")).expect("could not read private key file.");
-    let keychain = rcoin::keys::from_pem(&private_key_pem);
+    let keychain = rcoin::keys::Keychain::from_pem(&private_key_pem);
 
     println!("Rcoin address: {}", rcoin::addresses::from_keychain(&keychain));
     println!("==================================");

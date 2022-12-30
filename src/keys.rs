@@ -13,12 +13,12 @@ pub fn generate_keychain() -> Keychain {
     Keychain { key_pair }
 }
 
-pub fn from_pem(private_key_pem: &[u8]) -> Keychain {
-    let key_pair = EcKey::private_key_from_pem(private_key_pem).unwrap();
-    Keychain { key_pair }
-}
-
 impl Keychain {
+    pub fn from_pem(private_key_pem: &[u8]) -> Keychain {
+        let key_pair = EcKey::private_key_from_pem(private_key_pem).unwrap();
+        Keychain { key_pair }
+    }
+
     pub fn private_key_hex(&self) -> String {
         self.key_pair.private_key().to_hex_str().unwrap().to_string()
     }
