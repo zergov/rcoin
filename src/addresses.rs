@@ -1,13 +1,8 @@
 use crate::keys::Keychain;
-use crate::hash::hash256;
-
-use openssl::hash::{hash, MessageDigest};
+use crate::hash::{hash160, hash256};
 
 pub fn from_keychain(keychain: &Keychain) -> String {
-    let payload = keychain.public_key_bytes();
-    let payload = hash(MessageDigest::sha256(), &payload).unwrap();
-    let payload = hash(MessageDigest::ripemd160(), &payload).unwrap();
-    let mut payload = payload.to_vec();
+    let mut payload = hash160(&keychain.public_key_bytes());
 
     // Base58Check prefix version: 0x00 for addresses.
     payload.insert(0, 0x00);
