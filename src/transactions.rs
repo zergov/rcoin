@@ -1,10 +1,10 @@
 use ethnum::{u256};
 
 pub struct Transaction {
-    version: u32,
-    inputs: Vec<TxIn>,
-    outputs: Vec<TxOut>,
-    lock_time: u32,
+    pub version: u32,
+    pub inputs: Vec<TxIn>,
+    pub outputs: Vec<TxOut>,
+    pub lock_time: u32,
 }
 
 impl Transaction {
@@ -33,10 +33,10 @@ impl Transaction {
 }
 
 pub struct TxIn {
-    txid: u256,
-    vout: u32,
-    script_sig: String,
-    sequence: u32,
+    pub txid: u256,
+    pub vout: u32,
+    pub script_sig: String,
+    pub sequence: u32,
 }
 
 impl TxIn {
@@ -60,8 +60,8 @@ impl TxIn {
 }
 
 pub struct TxOut {
-    value: u64,
-    script_pub_key: String,
+    pub value: u64,
+    pub script_pub_key: String,
 }
 
 impl TxOut {
