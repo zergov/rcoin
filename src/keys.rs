@@ -1,5 +1,6 @@
 use openssl::bn::{BigNum, BigNumContext};
 use openssl::ec::{EcGroup, EcKey, PointConversionForm};
+use openssl::ecdsa::EcdsaSig;
 use openssl::nid::Nid;
 
 pub struct Keychain {
@@ -53,5 +54,10 @@ impl Keychain {
 
     pub fn public_key_pem(&self) -> Vec<u8> {
         self.key_pair.public_key_to_pem().unwrap()
+    }
+
+    pub fn sign(&self, data: &[u8]) -> Vec<u8>{
+        let ecdsa_sig = EcdsaSig::sign(data, &self.key_pair).unwrap();
+        ecdsa_sig.to_der().unwrap()
     }
 }

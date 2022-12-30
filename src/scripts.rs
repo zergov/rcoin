@@ -89,4 +89,11 @@ mod test {
         let script = String::from("SHA256 660e4502ce8f393eb5d5710febc339a58778bce175e4647ce50f8639786d132a EQUAL");
         assert_eq!(Err(String::from("SHA256: missing value on stack.")), execute(script))
     }
+
+    #[test]
+    fn test_p2pk_success() {
+       let keychain = crate::keys::generate_keychain();
+       let public_key = keychain.public_key_hex();
+       let script = String::from("{} OP_CHECKSIG");
+    }
 }
