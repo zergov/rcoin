@@ -1,3 +1,4 @@
+use openssl::hash::{hash, MessageDigest};
 use ethnum::{u256};
 
 pub struct Transaction {
@@ -8,6 +9,13 @@ pub struct Transaction {
 }
 
 impl Transaction {
+    pub fn id(&self) -> String {
+        let data = self.to_bytes();
+        let data = hash(MessageDigest::sha256(), &data).unwrap();
+        let data = hash(MessageDigest::sha256(), &data).unwrap();
+        hex::encode(data)
+    }
+
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut payload: Vec<u8> = Vec::new();
 
@@ -119,6 +127,20 @@ mod test {
         assert_eq!(expected_hex, tx.to_hex())
     }
 
+    #[test]
+    pub fn transaction_id_test() {
+        let tx = test_transaction();
+
+        // tx id is in the searchable format. Reverse byte order to get the same txid
+        let expected_txid: Vec<u8> = hex::decode("c1b4e695098210a31fe02abffe9005cffc051bbe86ff33e173155bcbdc5821e3")
+            .unwrap()
+            .into_iter()
+            .rev()
+            .collect();
+
+        assert_eq!(hex::encode(expected_txid), tx.id());
+    }
+
     fn test_transaction() -> Transaction {
         // example input from https://learnmeabitcoin.com/technical/input
         let txid_hex = "7967a5185e907a25225574544c31f7b059c1a191d65b53dcc1554d339c4f9efc";
@@ -140,6 +162,7 @@ mod test {
             script_pub_key: String::from("76a914db4d1141d0048b1ed15839d0b7a4c488cd368b0e88ac"),
         };
 
+        // transaction from https://learnmeabitcoin.com/explorer/transaction/c1b4e695098210a31fe02abffe9005cffc051bbe86ff33e173155bcbdc5821e3
         Transaction{
             version: 1,
             inputs: vec![txin],
