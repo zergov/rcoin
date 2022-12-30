@@ -1,8 +1,11 @@
 use ethnum::{U256, u256};
 use openssl::hash::{hash, MessageDigest};
 
+use crate::transactions::Transaction;
+
 pub struct Block {
     pub header: Header,
+    pub transactions: Vec<Transaction>,
 }
 
 pub struct Header {
@@ -23,7 +26,8 @@ pub fn genesis() -> Block {
             time: 1231006505,
             bits: 486604799,
             nounce: 2083236893,
-        }
+        },
+        transactions: vec![],
     }
 }
 

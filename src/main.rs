@@ -114,6 +114,7 @@ fn start_miner(miner: &Miner) {
             bits: target_bits,
             nounce: 0,
         },
+        transactions: vec![],
     };
 
     println!("current target:\t\t{}", target);
