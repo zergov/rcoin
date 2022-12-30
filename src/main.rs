@@ -105,6 +105,25 @@ fn start_miner(miner: &Miner) {
         .unwrap()
         .as_secs() as u32;
 
+    let coinbase = rcoin::transactions::Transaction {
+        version: 1,
+        inputs: vec![
+            rcoin::transactions::TxIn {
+                txid: 0.try_into().unwrap(),
+                vout: 0xffffffff,
+                script_sig: String::from("rcoin miner"),
+                sequence: 0xffffffff,
+            }
+        ],
+        outputs: vec![
+            rcoin::transactions::TxOut {
+                value: 25 * 100_000_000, // analogous 25 rcoin
+                script_pub_key: String::from("todo: locking script :)")
+            }
+        ],
+        lock_time: 0,
+    };
+
     let mut candidate_block = rcoin::block::Block {
         header: rcoin::block::Header {
             version: 0x1,
@@ -114,7 +133,7 @@ fn start_miner(miner: &Miner) {
             bits: target_bits,
             nounce: 0,
         },
-        transactions: vec![],
+        transactions: vec![coinbase],
     };
 
     println!("current target:\t\t{}", target);
