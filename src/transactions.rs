@@ -1,5 +1,6 @@
-use openssl::hash::{hash, MessageDigest};
-use ethnum::{u256};
+use ethnum::u256;
+
+use crate::hash::hash256;
 
 pub struct Transaction {
     pub version: u32,
@@ -11,9 +12,7 @@ pub struct Transaction {
 impl Transaction {
     pub fn id(&self) -> String {
         let data = self.to_bytes();
-        let data = hash(MessageDigest::sha256(), &data).unwrap();
-        let data = hash(MessageDigest::sha256(), &data).unwrap();
-        hex::encode(data)
+        hex::encode(hash256(&data))
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {

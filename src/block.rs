@@ -1,7 +1,7 @@
 use ethnum::{U256, u256};
-use openssl::hash::{hash, MessageDigest};
 
 use crate::transactions::Transaction;
+use crate::hash::hash256;
 
 pub struct Block {
     pub header: Header,
@@ -42,11 +42,7 @@ impl Block {
         payload.extend(self.header.bits.to_le_bytes());
         payload.extend(self.header.nounce.to_le_bytes());
 
-        let payload = hash(MessageDigest::sha256(), &payload).unwrap();
-        let payload = hash(MessageDigest::sha256(), &payload).unwrap();
-
-        let payload: [u8; 32] = payload.to_vec().try_into().unwrap();
-        U256::from_le_bytes(payload)
+        U256::from_le_bytes(hash256(&payload).try_into().unwrap())
     }
 
     pub fn hash_hex(&self) -> String {

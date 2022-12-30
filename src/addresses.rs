@@ -1,4 +1,5 @@
 use crate::keys::Keychain;
+use crate::hash::hash256;
 
 use openssl::hash::{hash, MessageDigest};
 
@@ -11,10 +12,8 @@ pub fn from_keychain(keychain: &Keychain) -> String {
     // Base58Check prefix version: 0x00 for addresses.
     payload.insert(0, 0x00);
 
-    let checksum = hash(MessageDigest::sha256(), &payload).unwrap();
-    let checksum = hash(MessageDigest::sha256(), &checksum).unwrap();
-
-    payload.extend(&checksum[0..4]);
+    let checksum = &hash256(&payload)[0..4];
+    payload.extend(checksum);
 
     bs58::encode(payload).into_string()
 }
