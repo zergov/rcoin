@@ -1,6 +1,14 @@
 use crate::hash::sha256;
 use crate::script::opcodes::*;
 
+pub fn new() -> Engine {
+    Engine {
+        script: vec![],
+        stack: vec![],
+        pc: 0,
+    }
+}
+
 pub struct Engine {
     // the script to execute.
     script: Vec<u8>,
@@ -13,14 +21,6 @@ pub struct Engine {
 }
 
 impl Engine {
-    pub fn new() -> Engine {
-        Engine {
-            script: vec![],
-            stack: vec![],
-            pc: 0,
-        }
-    }
-
     pub fn execute(&mut self, script: Vec<u8>) -> Result<bool, String> {
         self.script = script;
         self.stack = vec![];
@@ -153,49 +153,49 @@ mod test {
     fn test_math_puzzle_success() {
         // 4 4 ADD 8 EQUAL
         let script = hex::decode("0104010493010887").unwrap();
-        assert_eq!(Ok(true), Engine::new().execute(script))
+        assert_eq!(Ok(true), new().execute(script))
     }
 
     #[test]
     fn test_math_puzzle_failure() {
         // 4 1 ADD 8 EQUAL
         let script = hex::decode("0104010193010887").unwrap();
-        assert_eq!(Ok(false), Engine::new().execute(script))
+        assert_eq!(Ok(false), new().execute(script))
     }
 
     #[test]
     fn test_math_puzzle_add_missing_stack_value() {
         // 4 ADD 8 EQUAL
         let script = hex::decode("010493010887").unwrap();
-        assert_eq!(Err(String::from("OP_ADD: missing values on stack.")), Engine::new().execute(script))
+        assert_eq!(Err(String::from("OP_ADD: missing values on stack.")), new().execute(script))
     }
 
     #[test]
     fn test_math_puzzle_equal_missing_stack_value() {
         // 4 4 ADD EQUAL
         let script = hex::decode("010401049387").unwrap();
-        assert_eq!(Err(String::from("OP_EQUAL: missing values on stack.")), Engine::new().execute(script))
+        assert_eq!(Err(String::from("OP_EQUAL: missing values on stack.")), new().execute(script))
     }
 
     #[test]
     fn test_hash_puzzle_success() {
         // 72636f696e OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
         let script = hex::decode("0572636f696ea820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Ok(true), Engine::new().execute(script));
+        assert_eq!(Ok(true), new().execute(script));
     }
 
     #[test]
     fn test_hash_puzzle_failure() {
         // 0000000000 OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
         let script = hex::decode("050000000000a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Ok(false), Engine::new().execute(script))
+        assert_eq!(Ok(false), new().execute(script))
     }
 
     #[test]
     fn test_sha256_missing_stack_value() {
         // OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
         let script = hex::decode("a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Err(String::from("OP_SHA256: missing value on stack.")), Engine::new().execute(script))
+        assert_eq!(Err(String::from("OP_SHA256: missing value on stack.")), new().execute(script))
     }
 
     // #[test]
