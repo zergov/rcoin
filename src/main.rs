@@ -1,6 +1,5 @@
 use std::fs;
 use std::path::Path;
-use std::time::SystemTime;
 
 use clap::{Args, Parser, Subcommand};
 
