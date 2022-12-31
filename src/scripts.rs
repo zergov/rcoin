@@ -114,7 +114,7 @@ impl ScriptEngine {
                 self.stack.push(sha256(&data.as_bytes()));
                 Ok(())
             },
-            None => Err(String::from(""))
+            None => Err(String::from("OP_SHA256: missing value on stack."))
         }
     }
 
@@ -188,17 +188,19 @@ mod test {
         assert_eq!(Ok(true), ScriptEngine::new().execute(script));
     }
 
-    // #[test]
-    // fn test_hash_puzzle_failure() {
-        // let script = String::from("something_else SHA256 660e4502ce8f393eb5d5710febc339a58778bce175e4647ce50f8639786d132a EQUAL");
-        // assert_eq!(Ok(false), execute(script))
-    // }
+    #[test]
+    fn test_hash_puzzle_failure() {
+        // 0000000000 OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
+        let script = hex::decode("050000000000a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
+        assert_eq!(Ok(false), ScriptEngine::new().execute(script))
+    }
 
-    // #[test]
-    // fn test_sha256_missing_stack_value() {
-        // let script = String::from("SHA256 660e4502ce8f393eb5d5710febc339a58778bce175e4647ce50f8639786d132a EQUAL");
-        // assert_eq!(Err(String::from("SHA256: missing value on stack.")), execute(script))
-    // }
+    #[test]
+    fn test_sha256_missing_stack_value() {
+        // OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
+        let script = hex::decode("a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
+        assert_eq!(Err(String::from("OP_SHA256: missing value on stack.")), ScriptEngine::new().execute(script))
+    }
 
     // #[test]
     // fn test_p2pk_success() {
