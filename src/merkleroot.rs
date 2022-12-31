@@ -1,7 +1,7 @@
 use crate::hash::hash256;
 
 // implementation comes from https://learnmeabitcoin.com/technical/merkle-root
-pub fn merkleroot(txids: Vec<String>) -> String {
+pub fn from_txids(txids: Vec<String>) -> String {
     let mut result: Vec<String> = vec![];
 
     for txid_chunk in txids.chunks(2) {
@@ -19,7 +19,7 @@ pub fn merkleroot(txids: Vec<String>) -> String {
         return result.first().unwrap().to_string();
     };
 
-    merkleroot(result)
+    from_txids(result)
 }
 
 #[cfg(test)]
@@ -43,6 +43,6 @@ mod test {
             .map(|bytes| hex::encode(bytes))
             .collect();
 
-        assert_eq!("6657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f3", merkleroot(txids))
+        assert_eq!("6657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f3", from_txids(txids))
     }
 }
