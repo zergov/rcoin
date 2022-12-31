@@ -8,4 +8,5 @@ pub mod hash;
 pub mod keys;
 pub mod merkleroot;
 pub mod miner;
+pub mod serializers;
 pub mod transactions;
