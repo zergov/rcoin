@@ -1,5 +1,4 @@
-use ethnum::u256;
-
+use crate::u256;
 use crate::hash::hash256;
 
 pub struct Transaction {
