@@ -124,16 +124,20 @@ fn start_miner(miner: &Miner) {
         lock_time: 0,
     };
 
+    let transactions = vec![coinbase];
+    let merkleroot = rcoin::merkleroot::from_transactions(&transactions);
+    let merkleroot = hex::decode(merkleroot).unwrap();
+
     let mut candidate_block = rcoin::block::Block {
         header: rcoin::block::Header {
             version: 0x1,
             prev_block_hash: previous_block.hash(),
-            merkle_root: ethnum::U256::new(0), // TODO: implement merkle root hash computation
+            merkle_root: rcoin::u256::from_le_bytes(merkleroot.try_into().unwrap()),
             time: now,
             bits: target_bits,
             nounce: 0,
         },
-        transactions: vec![coinbase],
+        transactions,
     };
 
     println!("current target:\t\t{}", target);
