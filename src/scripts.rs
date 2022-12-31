@@ -36,10 +36,13 @@ fn execute(script: String) -> Result<bool, String> {
         };
     }
 
-    match stack.pop().unwrap_or("1".to_string()).as_str() {
-        "0" => Ok(false),
-        "OP_0" => Ok(false),
-        _ => Ok(true)
+    if stack.len() > 1 {
+        return Ok(false);
+    };
+
+    match stack.pop() {
+        None => Ok(false),
+        Some(s) => Ok(s != "0"),
     }
 }
 
