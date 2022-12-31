@@ -1,5 +1,5 @@
-use crate::u256;
 use crate::hash::hash256;
+use crate::u256;
 
 pub struct Transaction {
     pub version: u32,

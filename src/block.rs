@@ -1,6 +1,6 @@
-use crate::u256;
-use crate::transactions::Transaction;
 use crate::hash::hash256;
+use crate::transactions::Transaction;
+use crate::u256;
 
 pub struct Block {
     pub header: Header,

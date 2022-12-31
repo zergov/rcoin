@@ -1,6 +1,6 @@
-use openssl::nid::Nid;
 use openssl::bn::{BigNum, BigNumContext};
 use openssl::ec::{EcGroup, EcKey, PointConversionForm};
+use openssl::nid::Nid;
 
 pub struct Keychain {
     key_pair: EcKey<openssl::pkey::Private>,

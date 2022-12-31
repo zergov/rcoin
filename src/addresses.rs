@@ -1,5 +1,5 @@
-use crate::keys::Keychain;
 use crate::hash::{hash160, hash256};
+use crate::keys::Keychain;
 
 pub fn from_keychain(keychain: &Keychain) -> String {
     let mut payload = hash160(&keychain.public_key_bytes());
