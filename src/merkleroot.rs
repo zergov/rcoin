@@ -1,4 +1,5 @@
 use crate::hash::hash256;
+use crate::transactions::Transaction;
 
 // implementation comes from https://learnmeabitcoin.com/technical/merkle-root
 pub fn from_txids(txids: Vec<String>) -> String {
@@ -20,6 +21,15 @@ pub fn from_txids(txids: Vec<String>) -> String {
     };
 
     from_txids(result)
+}
+
+pub fn from_transactions(transactions: &Vec<Transaction>) -> String {
+    let txids: Vec<_> = transactions
+        .iter()
+        .map(|tx| tx.id())
+        .collect();
+
+    from_txids(txids)
 }
 
 #[cfg(test)]
