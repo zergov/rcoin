@@ -23,8 +23,10 @@ mod test {
 
     #[test]
     fn test_sha256() {
-        let data = hex::decode("72636f696e").unwrap();
-        let expected = hex::decode("e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85").unwrap();
-        assert_eq!(expected, sha256(&data))
+        let data = String::from("72636f696e");
+        assert_eq!(
+            "e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85",
+            hex::encode(sha256(data.as_bytes()))
+        )
     }
 }

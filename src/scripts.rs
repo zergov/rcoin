@@ -110,10 +110,8 @@ impl ScriptEngine {
     fn op_sha256(&mut self) -> Result<(), String> {
         match self.stack.pop() {
             Some(data) => {
-                println!("OP_SHA256");
-                println!("data to sha256: {:?}", data);
-                println!("sha256 of data: {:?}", sha256(&data));
-                self.stack.push(sha256(&data));
+                let data = hex::encode(data);
+                self.stack.push(sha256(&data.as_bytes()));
                 Ok(())
             },
             None => Err(String::from(""))
@@ -187,7 +185,7 @@ mod test {
     fn test_hash_puzzle_success() {
         // 72636f696e OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
         let script = hex::decode("0572636f696ea820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Ok(true), ScriptEngine::new().execute(script))
+        assert_eq!(Ok(true), ScriptEngine::new().execute(script));
     }
 
     // #[test]
