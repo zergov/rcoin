@@ -29,7 +29,7 @@ impl Miner {
             version: 1,
             inputs: vec![
                 TxIn {
-                    txid: 0.try_into().unwrap(),
+                    txid: u256::new(0),
                     vout: 0xffffffff,
                     script_sig: hex::encode("rcoin miner"),
                     sequence: 0xffffffff,
@@ -37,7 +37,7 @@ impl Miner {
             ],
             outputs: vec![
                 TxOut {
-                    value: self.coinbase_reward(),
+                    value: 25 * 100_000_000,
                     script_pub_key: hex::encode("todo: locking script :)")
                 }
             ],
@@ -61,10 +61,6 @@ impl Miner {
             },
             transactions,
         }
-    }
-
-    fn coinbase_reward(&self) -> u64 {
-        25 * 100_000_000 // analogous 25 rcoin
     }
 }
 
