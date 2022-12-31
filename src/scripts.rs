@@ -1,4 +1,4 @@
-use crate::hash::{sha256};
+use crate::hash::sha256;
 
 pub struct ScriptEngine {
     // the script to execute.
