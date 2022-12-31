@@ -1,5 +1,5 @@
 #[allow(non_camel_case_types)]
-type u256 = ethnum::u256;
+pub type u256 = ethnum::u256;
 
 pub mod addresses;
 pub mod block;
