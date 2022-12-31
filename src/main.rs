@@ -113,15 +113,7 @@ fn start_miner(miner: &Miner) {
 
         println!("");
         println!("--- block found! ---");
-        println!("hash:\t\t{}", new_block.hash());
-        println!("hash hex:\t{}", new_block.hash_hex());
-        println!("version: {}", new_block.header.version);
-        println!("prev_block_hash: {}", new_block.header.prev_block_hash);
-        println!("prev_block_hash hex: {}", new_block.prev_block_hash_hex());
-        println!("merkle_root: {}", new_block.header.merkle_root);
-        println!("time: {}", new_block.header.time);
-        println!("bits: {}", new_block.header.bits);
-        println!("nounce: {}", new_block.header.nounce);
+        println!("{}", rcoin::serializers::block_serializer::to_json_pretty(&new_block));
 
         previous_block = new_block;
     }
