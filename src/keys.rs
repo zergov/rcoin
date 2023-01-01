@@ -39,17 +39,7 @@ impl Keychain {
     }
 
     pub fn public_key_hex(&self) -> String {
-        let mut ctx = BigNumContext::new().unwrap();
-        let mut x = BigNum::new().unwrap();
-        let mut y = BigNum::new().unwrap();
-        let public_key = self.key_pair.public_key();
-        let group = self.key_pair.group();
-
-        public_key
-            .affine_coordinates(group, &mut x, &mut y, &mut ctx)
-            .unwrap();
-
-        format!("04{}{}", x.to_hex_str().unwrap(), y.to_hex_str().unwrap())
+        hex::encode(self.public_key_bytes())
     }
 
     pub fn public_key_pem(&self) -> Vec<u8> {
