@@ -1,11 +1,14 @@
 use crate::hash::sha256;
 use crate::script::opcodes::*;
+use crate::transactions::Transaction;
 
 pub fn new() -> Engine {
     Engine {
         script: vec![],
         stack: vec![],
         pc: 0,
+        transaction: None,
+        vin: 0,
     }
 }
 
@@ -18,6 +21,12 @@ pub struct Engine {
 
     // the program counter is the index of the current instruction.
     pc: usize,
+
+    // the transaction this script engine will run for.
+    transaction: Option<Transaction>,
+
+    // the index of the input transaction this script engine will run for.
+    vin: u32,
 }
 
 impl Engine {
