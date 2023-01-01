@@ -1,6 +1,7 @@
 use crate::hash::hash256;
 use crate::u256;
 
+#[derive(Clone)]
 pub struct Transaction {
     pub version: u32,
     pub inputs: Vec<TxIn>,
@@ -38,6 +39,7 @@ impl Transaction {
     }
 }
 
+#[derive(Clone)]
 pub struct TxIn {
     pub txid: u256,
     pub vout: u32,
@@ -65,6 +67,7 @@ impl TxIn {
     }
 }
 
+#[derive(Clone)]
 pub struct TxOut {
     pub value: u64,
     pub script_pub_key: String,
