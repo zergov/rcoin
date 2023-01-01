@@ -5,6 +5,8 @@ use crate::transactions::Transaction;
 pub fn new() -> Engine {
     Engine {
         script: vec![],
+        unlock_script: vec![],
+        lock_script: vec![],
         stack: vec![],
         pc: 0,
         transaction: None,
@@ -13,8 +15,14 @@ pub fn new() -> Engine {
 }
 
 pub struct Engine {
-    // the script to execute.
+    // the full script to execute (unlock_script + lock_script).
     script: Vec<u8>,
+
+    // the original unlock_script
+    unlock_script: Vec<u8>,
+
+    // the original unlock_script
+    lock_script: Vec<u8>,
 
     // the stack for the execution of the script.
     stack: Vec<Vec<u8>>,
@@ -30,8 +38,14 @@ pub struct Engine {
 }
 
 impl Engine {
-    pub fn execute(&mut self, script: Vec<u8>) -> Result<bool, String> {
-        self.script = script;
+    pub fn execute(&mut self, unlock_script: &String, lock_script: &String) -> Result<bool, String> {
+        self.unlock_script = hex::decode(unlock_script).unwrap();
+        self.lock_script = hex::decode(lock_script).unwrap();
+
+        self.script = vec![];
+        self.script.extend(&self.unlock_script);
+        self.script.extend(&self.lock_script);
+
         self.stack = vec![];
         self.pc = 0;
 
@@ -160,51 +174,77 @@ mod test {
 
     #[test]
     fn test_math_puzzle_success() {
-        // 4 4 ADD 8 EQUAL
-        let script = hex::decode("0104010493010887").unwrap();
-        assert_eq!(Ok(true), new().execute(script))
+        let unlock_script = String::from("0104");         // 4
+        let lock_script = String::from("010493010887");   // 4 ADD 8 EQUAL
+        let mut script_engine = new();
+
+        assert_eq!(Ok(true), script_engine.execute(&unlock_script, &lock_script))
     }
 
     #[test]
     fn test_math_puzzle_failure() {
-        // 4 1 ADD 8 EQUAL
-        let script = hex::decode("0104010193010887").unwrap();
-        assert_eq!(Ok(false), new().execute(script))
+        let unlock_script = String::from("0104");         // 4
+        let lock_script = String::from("010193010887");   // 1 ADD 8 EQUAL
+        let mut script_engine = new();
+
+        assert_eq!(Ok(false), script_engine.execute(&unlock_script, &lock_script))
     }
 
     #[test]
     fn test_math_puzzle_add_missing_stack_value() {
-        // 4 ADD 8 EQUAL
-        let script = hex::decode("010493010887").unwrap();
-        assert_eq!(Err(String::from("OP_ADD: missing values on stack.")), new().execute(script))
+        let unlock_script = String::from("0104");       // 4
+        let lock_script = String::from("93010887");     // ADD 8 EQUAL
+        let mut script_engine = new();
+
+        assert_eq!(
+            Err(String::from("OP_ADD: missing values on stack.")),
+            script_engine.execute(&unlock_script, &lock_script)
+        )
     }
 
     #[test]
     fn test_math_puzzle_equal_missing_stack_value() {
-        // 4 4 ADD EQUAL
-        let script = hex::decode("010401049387").unwrap();
-        assert_eq!(Err(String::from("OP_EQUAL: missing values on stack.")), new().execute(script))
+        let unlock_script = String::from("0104");           // 4
+        let lock_script = String::from("01049387");         // 4 ADD EQUAL
+        let mut script_engine = new();
+
+        assert_eq!(
+            Err(String::from("OP_EQUAL: missing values on stack.")),
+            script_engine.execute(&unlock_script, &lock_script)
+        )
     }
 
     #[test]
     fn test_hash_puzzle_success() {
-        // 72636f696e OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
-        let script = hex::decode("0572636f696ea820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Ok(true), new().execute(script));
+        // 72636f696e | OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
+        let unlock_script = String::from("0572636f696e");
+        let lock_script = String::from("a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587");
+        let mut script_engine = new();
+
+        assert_eq!(Ok(true), script_engine.execute(&unlock_script, &lock_script));
     }
 
     #[test]
     fn test_hash_puzzle_failure() {
-        // 0000000000 OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
-        let script = hex::decode("050000000000a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Ok(false), new().execute(script))
+        // 0000000000 | OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
+        let unlock_script = String::from("050000000000");
+        let lock_script = String::from("a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587");
+        let mut script_engine = new();
+
+        assert_eq!(Ok(false), script_engine.execute(&unlock_script, &lock_script))
     }
 
     #[test]
     fn test_sha256_missing_stack_value() {
         // OP_SHA256 e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a85 OP_EQUAL
-        let script = hex::decode("a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587").unwrap();
-        assert_eq!(Err(String::from("OP_SHA256: missing value on stack.")), new().execute(script))
+        let unlock_script = String::from("");
+        let lock_script = String::from("a820e49dc62d36294343898b5a0b29335600c1106b70a2827371fe1321013d764a8587");
+        let mut script_engine = new();
+
+        assert_eq!(
+            Err(String::from("OP_SHA256: missing value on stack.")),
+            script_engine.execute(&unlock_script, &lock_script)
+        );
     }
 
     // #[test]
