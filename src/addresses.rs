@@ -2,7 +2,7 @@ use crate::hash::{hash160, hash256};
 use crate::keys::Keychain;
 
 pub fn from_keychain(keychain: &Keychain) -> String {
-    let mut payload = hash160(&keychain.public_key_bytes());
+    let mut payload = hash160(&keychain.public_key_uncompressed());
 
     // Base58Check prefix version: 0x00 for addresses.
     payload.insert(0, 0x00);

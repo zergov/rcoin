@@ -28,7 +28,7 @@ impl Keychain {
         self.key_pair.private_key_to_pem().unwrap()
     }
 
-    pub fn public_key_bytes(&self) -> Vec<u8> {
+    pub fn public_key_uncompressed(&self) -> Vec<u8> {
         let mut ctx = BigNumContext::new().unwrap();
         let public_key = self.key_pair.public_key();
         let group = self.key_pair.group();
@@ -39,7 +39,7 @@ impl Keychain {
     }
 
     pub fn public_key_hex(&self) -> String {
-        hex::encode(self.public_key_bytes())
+        hex::encode(self.public_key_uncompressed())
     }
 
     pub fn public_key_pem(&self) -> Vec<u8> {
