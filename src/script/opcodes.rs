@@ -19,3 +19,8 @@ pub const OP_ADD: u8 = 0x93;
 // Crypto
 /// The input is hashed using SHA-256.
 pub const OP_SHA256: u8 = 0xa8;
+
+/// The entire transaction's outputs, inputs, and script (from the most recently-executed
+/// OP_CODESEPARATOR to the end) are hashed. The signature used by OP_CHECKSIG must be a valid
+/// signature for this hash and public key. If it is, 1 is returned, 0 otherwise.
+pub const OP_CHECKSIG: u8 = 0xac;
