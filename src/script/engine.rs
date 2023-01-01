@@ -2,26 +2,14 @@ use crate::hash::sha256;
 use crate::script::opcodes::*;
 use crate::transactions::Transaction;
 
-pub fn new() -> Engine {
-    Engine {
-        script: vec![],
-        unlock_script: vec![],
-        lock_script: vec![],
-        stack: vec![],
-        pc: 0,
-        transaction: None,
-        vin: 0,
-    }
-}
-
 pub struct Engine {
     // the full script to execute (unlock_script + lock_script).
     script: Vec<u8>,
 
-    // the original unlock_script
+    // the unlock_script provided to unlock the txin of the transaction
     unlock_script: Vec<u8>,
 
-    // the original unlock_script
+    // the lock script of the txout used as an input in the current transaction.
     lock_script: Vec<u8>,
 
     // the stack for the execution of the script.
@@ -35,6 +23,18 @@ pub struct Engine {
 
     // the index of the input transaction this script engine will run for.
     vin: u32,
+}
+
+pub fn new() -> Engine {
+    Engine {
+        script: vec![],
+        unlock_script: vec![],
+        lock_script: vec![],
+        stack: vec![],
+        pc: 0,
+        transaction: None,
+        vin: 0,
+    }
 }
 
 impl Engine {
