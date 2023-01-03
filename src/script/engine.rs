@@ -61,6 +61,7 @@ impl Engine {
                 OP_ADD => self.op_add(),
                 OP_EQUAL => self.op_equal(),
                 OP_SHA256 => self.op_sha256(),
+                OP_CHECKSIG => self.op_checksig(),
                 _ => Ok(()),
             };
 
@@ -134,6 +135,29 @@ impl Engine {
                 Ok(())
             },
             None => Err(String::from("OP_SHA256: missing value on stack."))
+        }
+    }
+
+    fn op_checksig(&mut self) -> Result<(), String> {
+        let pub_key = self.stack.pop();
+        let signature = self.stack.pop();
+
+        if self.transaction.is_none() {
+            return Err(String::from("OP_CHECKSIG: missing transaction in script context."))
+        };
+
+        self.transaction.unwrap();
+
+        match (pub_key, signature) {
+            (Some(pub_key), Some(signature)) => {
+                let pub_key = hex::encode(pub_key).as_bytes();
+                let signature = hex::encode(signature).as_bytes();
+
+                let subscript = self.lock_script.clone();
+
+                Ok(())
+            },
+            _ => Err(String::from("")),
         }
     }
 
@@ -249,8 +273,10 @@ mod test {
 
     // #[test]
     // fn test_p2pk_success() {
-       // let keychain = crate::keys::generate_keychain();
-       // let public_key = keychain.public_key_hex();
-       // let script = String::from("{} OP_CHECKSIG");
+        // // {signature}01 {public key} OP_CHECKSIG
+        // let unlock_script = String::from("");
+        // let keychain = crate::keys::generate_keychain();
+        // let public_key = keychain.public_key_hex();
+        // let script = String::from("{} OP_CHECKSIG");
     // }
 }
